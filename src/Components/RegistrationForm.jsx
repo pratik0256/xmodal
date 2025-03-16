@@ -1,64 +1,65 @@
 import React, { useState } from 'react';
 
 function RegistrationForm() {
-  const [formFields, setFormFields] = useState({
+  const [formData, setFormData] = useState({
     userName: '',
     userEmail: '',
     userPhone: '',
-    birthDate: '',
+    userDOB: '',
   });
 
   const [formErrors, setFormErrors] = useState({
-    userNameError: false,
-    userEmailError: false,
-    userPhoneError: false,
-    birthDateError: false,
-    emailFormatError: false,
+    userName: false,
+    userEmail: false,
+    userPhone: false,
+    userDOB: false,
+    emailInvalid: false,
   });
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormFields({
-      ...formFields,
+    setFormData({
+      ...formData,
       [name]: value,
     });
 
-    setFormErrors({ ...formErrors, [name]: false, emailFormatError: false });
+    setFormErrors({ ...formErrors, [name]: false, emailInvalid: false });
   };
 
-  const validateForm = () => {
-    const updatedErrors = {
-      userNameError: !formFields.userName.trim(),
-      userEmailError: !formFields.userEmail.trim(),
-      userPhoneError: !formFields.userPhone.trim(),
-      birthDateError: !formFields.birthDate.trim(),
-      emailFormatError: !formFields.userEmail.includes('@') && formFields.userEmail.trim() !== '',
+  const validateFields = () => {
+    const errors = {
+      userName: !formData.userName.trim(),
+      userEmail: !formData.userEmail.trim(),
+      userPhone: !formData.userPhone.trim(),
+      userDOB: !formData.userDOB.trim(),
+      emailInvalid: !formData.userEmail.includes('@') && formData.userEmail.trim() !== '',
     };
 
-    return updatedErrors;
+    return errors;
   };
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
-    const validationErrors = validateForm();
+    const validationErrors = validateFields();
     setFormErrors(validationErrors);
 
-    if (validationErrors.emailFormatError) {
-      alert('Invalid email format. Please provide a correct email address.');
+    if (validationErrors.emailInvalid) {
+      alert('Invalid email. Please check your email address.');
       return;
     }
 
-    const phoneNumberValid = /^\d{10}$/.test(formFields.userPhone);
-    const today = new Date();
-    const dob = new Date(formFields.birthDate);
+    const phoneIsValid = /^\d{10}$/.test(formData.userPhone);
 
-    if (dob > today) {
+    const currentDate = new Date();
+    const selectedDateOfBirth = new Date(formData.userDOB);
+
+    if (selectedDateOfBirth > currentDate) {
       alert('Invalid date of birth. Date of birth cannot be in the future.');
       return;
     }
 
-    if (!phoneNumberValid) {
-      alert('Phone number is invalid. Please enter a 10-digit number.');
+    if (!phoneIsValid) {
+      alert('Invalid phone number. Please enter a 10-digit phone number.');
       return;
     }
 
@@ -66,31 +67,32 @@ function RegistrationForm() {
       return;
     }
 
-    console.log('Form submitted successfully:', formFields);
+    console.log('Form Submitted Successfully:', formData);
     alert('Form submitted successfully!');
-    setFormFields({
+    setFormData({
       userName: '',
       userEmail: '',
       userPhone: '',
-      birthDate: '',
+      userDOB: '',
     });
     setFormErrors({});
   };
 
   return (
     <div style={{ maxWidth: '400px', margin: '0 auto', padding: '30px', border: '1px solid #ddd', borderRadius: '8px' }}>
-      <h2>Registration Form</h2>
+      <h2>Fill Details</h2>
       <form onSubmit={handleFormSubmit} noValidate>
         <div style={{ marginBottom: '15px' }}>
           <label>Username:</label>
           <input
             type="text"
             name="userName"
-            value={formFields.userName}
+            id="userName"
+            value={formData.userName}
             onChange={handleInputChange}
             style={{ display: 'block', width: '100%', padding: '8px', marginTop: '5px' }}
           />
-          {formErrors.userNameError && (
+          {formErrors.userName && (
             <span style={{ color: 'red', fontSize: '12px' }}>Please fill out this field</span>
           )}
         </div>
@@ -98,13 +100,14 @@ function RegistrationForm() {
         <div style={{ marginBottom: '15px' }}>
           <label>Email Address:</label>
           <input
-            type="email"
+            id="userEmail"
             name="userEmail"
-            value={formFields.userEmail}
+            type="email"
+            value={formData.userEmail}
             onChange={handleInputChange}
             style={{ display: 'block', width: '100%', padding: '8px', marginTop: '5px' }}
           />
-          {formErrors.userEmailError && (
+          {formErrors.userEmail && (
             <span style={{ color: 'red', fontSize: '12px' }}>Please fill out this field</span>
           )}
         </div>
@@ -113,12 +116,13 @@ function RegistrationForm() {
           <label>Phone Number:</label>
           <input
             type="tel"
+            id="userPhone"
             name="userPhone"
-            value={formFields.userPhone}
+            value={formData.userPhone}
             onChange={handleInputChange}
             style={{ display: 'block', width: '100%', padding: '8px', marginTop: '5px' }}
           />
-          {formErrors.userPhoneError && (
+          {formErrors.userPhone && (
             <span style={{ color: 'red', fontSize: '12px' }}>Please fill out this field</span>
           )}
         </div>
@@ -127,17 +131,19 @@ function RegistrationForm() {
           <label>Date of Birth:</label>
           <input
             type="date"
-            name="birthDate"
-            value={formFields.birthDate}
+            id="userDOB"
+            name="userDOB"
+            value={formData.userDOB}
             onChange={handleInputChange}
             style={{ display: 'block', width: '100%', padding: '8px', marginTop: '5px' }}
           />
-          {formErrors.birthDateError && (
+          {formErrors.userDOB && (
             <span style={{ color: 'red', fontSize: '12px' }}>Please fill out this field</span>
           )}
         </div>
 
         <button
+          className="submit-button"
           type="submit"
           style={{
             backgroundColor: '#007bff',
@@ -154,5 +160,7 @@ function RegistrationForm() {
     </div>
   );
 }
+
+
 
 export default RegistrationForm;
