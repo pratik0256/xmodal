@@ -1,15 +1,15 @@
 import React, { useState, useRef } from 'react';
-import RegistrationForm from './RegistrationForm';
+import Form from './RegistrationForm';
 
 function UserDetailsModal() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const modalContainerRef = useRef(null);
 
-  const openModal = () => {
+  const openModalHandler = () => {
     setIsModalOpen(true);
   };
 
-  const closeModal = (e) => {
+  const closeModalHandler = (e) => {
     if (modalContainerRef.current && !modalContainerRef.current.contains(e.target)) {
       setIsModalOpen(false);
     }
@@ -17,23 +17,19 @@ function UserDetailsModal() {
 
   return (
     <>
-      <h2>Modal for User Details</h2>
-      <button onClick={openModal} style={openButtonStyle}>
+      <h2>User Details Modal</h2>
+      <button onClick={openModalHandler} style={openButtonStyle}>
         Open Form
       </button>
 
       {isModalOpen && (
         <div
           className="modal-overlay"
-          style={overlayStyle}
-          onClick={closeModal}
+          style={overlayContainerStyle}
+          onClick={closeModalHandler} 
         >
-          <div
-            className="modal-content-container"
-            style={modalContainerStyle}
-            ref={modalContainerRef}
-          >
-            <RegistrationForm />
+          <div className="modal-box" style={modalBoxStyle} ref={modalContainerRef}>
+            <Form />
           </div>
         </div>
       )}
@@ -51,7 +47,7 @@ const openButtonStyle = {
   marginTop: '20px',
 };
 
-const overlayStyle = {
+const overlayContainerStyle = {
   position: 'fixed',
   top: 0,
   left: 0,
@@ -64,12 +60,14 @@ const overlayStyle = {
   zIndex: 1000,
 };
 
-const modalContainerStyle = {
+const modalBoxStyle = {
   backgroundColor: 'white',
   padding: '20px',
   borderRadius: '8px',
   width: '400px',
   boxShadow: '0px 2px 10px rgba(0, 0, 0, 0.2)',
 };
+
+
 
 export default UserDetailsModal;
